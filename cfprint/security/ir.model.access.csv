@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_cfprint_template_all,"cfprint template",model_cf_template,,1,1,1,1
+access_cfprint_template_category_all,"cfprint template_category",model_cf_template_category,,1,1,1,1
+access_cfprint_template_history_all,"cfprint template_history",model_cf_template_history,,1,1,1,1

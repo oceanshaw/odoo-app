@@ -1,0 +1,474 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="cf_external_layout_no_header" inherit_id="report.external_layout" primary="True">
+            <xpath expr="//t[@t-call='report.external_layout_header']" position="attributes">
+                <attribute name="t-call">stock_cf.external_layout_header_blank</attribute>
+            </xpath>
+        </template>
+
+        <template id="external_layout_header_blank" inherit_id="report.external_layout_header" primary="True">
+            <xpath expr="//div[@class='header']" position="replace">
+                <!--
+                <div class="header">
+                    <div class="row">
+                        <div class="col-xs-3"><img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height: 45px;"/></div>
+                        <div class="col-xs-9 text-right" style="margin-top:20px;" t-field="company.rml_header1"/>
+                    </div>
+
+                    <div class="row zero_min_height">
+                        <div class="col-xs-12"><div style="border-bottom: 1px solid black;"></div></div>
+                    </div>
+                </div>
+                -->
+            </xpath>
+        </template>
+
+
+<!-- 订单/询价单 -->
+<template id="report_saleorder_document">
+    <t t-call="report.external_layout">
+        <t t-foreach="docs" t-as="doc">
+        <t t-set="doc" t-value="doc.with_context({'lang':doc.partner_id.lang})" />
+        <div class="page">
+            <div class="oe_structure"/>
+            <div class="row">
+                <div class="col-xs-6">
+                    <strong t-if="doc.partner_shipping_id == doc.partner_invoice_id">Invoicing and shipping address:</strong>
+                    <strong t-if="doc.partner_shipping_id != doc.partner_invoice_id">Invoicing address:</strong>
+                    <div t-field="doc.partner_invoice_id"
+                        t-options='{"widget": "contact", "fields": ["address", "name", "phone", "fax"], "no_marker": True, "phone_icons": True}'/>
+                    <p t-if="doc.partner_id.vat">VAT: <span t-field="doc.partner_id.vat"/></p>
+                    <div t-if="doc.partner_shipping_id != doc.partner_invoice_id" class="mt8">
+                        <strong>Shipping address:</strong>
+                        <div t-field="doc.partner_shipping_id"
+                            t-options='{"widget": "contact", "fields": ["address", "name", "phone", "fax"], "no_marker": True, "phone_icons": True}'/>
+                        <p t-if="doc.partner_id.vat">VAT: <span t-field="doc.partner_id.vat"/></p>
+                    </div>
+                </div>
+                <div class="col-xs-5 col-xs-offset-1">
+                    <div t-field="doc.partner_id"
+                        t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}' />
+                </div>
+            </div>
+
+            <h2>
+                <span t-if="doc.state not in ['draft','sent']">Order # </span>
+                <span t-if="doc.state in ['draft','sent']">Quotation # </span>
+                <span t-field="doc.name"/>
+            </h2>
+
+            <div class="row mt32 mb32" id="informations">
+                <div t-if="doc.client_order_ref" class="col-xs-3">
+                    <strong>Your Reference:</strong>
+                    <p t-field="doc.client_order_ref"/>
+                </div>
+                <div t-if="doc.date_order" class="col-xs-3">
+                    <strong t-if="doc.state not in ['draft','sent']">Date Ordered:</strong>
+                    <strong t-if="doc.state in ['draft','sent']">Quotation Date:</strong>
+                    <p t-field="doc.date_order"/>
+                </div>
+                <div t-if="doc.user_id.name" class="col-xs-3">
+                    <strong>Salesperson:</strong>
+                    <p t-field="doc.user_id"/>
+                </div>
+                <div name="payment_term" t-if="doc.payment_term_id" class="col-xs-3">
+                    <strong>Payment Terms:</strong>
+                    <p t-field="doc.payment_term_id"/>
+                </div>
+            </div>
+
+            <!-- Is there a discount on at least one line? -->
+            <t t-set="display_discount" t-value="any([l.discount for l in doc.order_line])"/>
+
+            <t t-foreach="doc.order_lines_layouted()" t-as="page">
+                <table class="table table-condensed">
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th class="text-right">Quantity</th>
+                            <th class="text-right">Unit Price</th>
+                            <th t-if="display_discount" class="text-right" groups="sale.group_discount_per_so_line">Disc.(%)</th>
+                            <th class="text-right">Taxes</th>
+                            <th class="text-right" groups="sale.group_show_price_subtotal">Price</th>
+                            <th class="text-right price_tax_included" groups="sale.group_show_price_total">Total Price</th>
+                        </tr>
+                   </thead>
+                   <tbody class="sale_tbody">
+                        <t t-foreach="page" t-as="layout_category">
+
+                            <t t-if="layout_category_size > 1 or page_size > 1" groups="sale.group_sale_layout">
+                                <tr class="active">
+                                    <td colspan="7" style="font-weight: bold; border-bottom: 1px solid black;">&amp;bull;
+                                        <t t-esc="layout_category['name']"/>
+                                    </td>
+                                </tr>
+                            </t>
+
+                            <!-- Lines associated -->
+                            <t t-foreach="layout_category['lines']" t-as="l">
+                                <tr>
+                                    <td><span t-field="l.name"/></td>
+                                    <td class="text-right">
+                                        <span t-field="l.product_uom_qty"/>
+                                        <span t-field="l.product_uom" groups="product.group_uom"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-field="l.price_unit"/>
+                                    </td>
+                                    <td t-if="display_discount" class="text-right" groups="sale.group_discount_per_so_line">
+                                        <span t-field="l.discount"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-esc="', '.join(map(lambda x: (x.description or x.name), l.tax_id))"/>
+                                    </td>
+                                    <td class="text-right" groups="sale.group_show_price_subtotal">
+                                        <span t-field="l.price_subtotal"
+                                            t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                                    </td>
+                                    <td class="text-right" groups="sale.group_show_price_total">
+                                        <span t-field="l.price_total"
+                                            t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                                    </td>
+                                </tr>
+                            </t>
+
+                            <t t-if="(layout_category_size > 1 or page_size > 1) and layout_category['subtotal']" groups="sale.group_sale_layout">
+                                <tr class="text-right">
+                                    <td colspan="6">
+                                        <strong>Subtotal: </strong>
+                                        <t t-set="subtotal" t-value="sum(line.price_subtotal for line in layout_category['lines'])"/>
+                                        <span t-esc="subtotal" t-options="{'widget': 'monetary', 'display_currency': doc.pricelist_id.currency_id}"/>
+                                    </td>
+                                </tr>
+                            </t>
+
+                        </t>
+                    </tbody>
+                </table>
+
+                <t t-if="page_index &lt; page_size - 1" groups="sale.group_sale_layout">
+                    <p style="page-break-before:always;"> </p>
+                </t>
+            </t>
+
+            <div class="row" name="total">
+                <div class="col-xs-4 pull-right">
+                    <table class="table table-condensed">
+                        <tr class="border-black">
+                            <td><strong>Total Without Taxes</strong></td>
+                            <td class="text-right">
+                                <span t-field="doc.amount_untaxed"
+                                    t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                            </td>
+                        </tr>
+                        <t t-foreach="doc._get_tax_amount_by_group()" t-as="amount_by_group">
+                            <tr>
+                                <td><span t-esc="amount_by_group[0] or 'Taxes'"/></td>
+                                <td class="text-right">
+                                    <span t-esc="amount_by_group[1]"
+                                        t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                                </td>
+                            </tr>
+                        </t>
+                        <tr class="border-black">
+                            <td><strong>Total</strong></td>
+                            <td class="text-right">
+                                <span t-field="doc.amount_total"
+                                    t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <p t-field="doc.note" />
+            <p t-if="doc.payment_term_id.note">
+                <span t-field="doc.payment_term_id.note"/>
+            </p>
+            <p id="fiscal_position_remark" t-if="doc.fiscal_position_id and doc.fiscal_position_id.note">
+                <strong>Fiscal Position Remark:</strong>
+                <span t-field="doc.fiscal_position_id.note"/>
+            </p>
+            <div class="oe_structure"/>
+        </div>
+    </t>
+    </t>
+<!--必须先安装cfprint模块，以引入基础类库-->
+<script type="text/javascript">
+var cfprint_addr = "127.0.0.1";   //打印服务器监听地址
+var _delay_close = -1;          //打印完成后关闭窗口的延时时长(毫秒), -1则表示不关闭
+
+/******************************* 康虎云报表与ODOO集成时，模板调用方法 **********************************/
+/*从数据库中获取打印模板方法1（调用简短方法）：*/
+//var _data = {"template": "base64:<t t-esc="cf_template(user.env, '12345')" />", "ver": 4, "Copies": 1, "Duplex": 0, "Tables":[]};
+
+/*从数据库中获取打印模板方法2（直接查询法）：*/
+//var _data = {"template": "base64:<!-- t t-esc="user.env['cf.template'].search([('templ_id', '=', '12345')], limit=1).template" / -->", "ver": 4, "Copies": 1, "Duplex": 0, "Tables":[]};
+
+/*打印模板在客户端*/
+var _data = {"template": "report_saleorder.fr3", "ver": 4, "Copies": 1, "Duplex": 0, "Tables":[]};
+/*******************************************************************************************************/
+
+/*
+Odoo中的LOGO是以Base64保存的，所以只需要把Base64中的换行去掉，然后赋值给字段即可。
+为了减少数据传输量，把LOGO单独放一张表，而不是放在循环中与主表记录一起生成多次。
+*/
+<t t-set="company_logo" t-value="res_company.logo.replace('\n','').encode('utf-8')"/>
+//生成LOGO数据
+var _tableLogo = {
+    "Name": "Logo",
+    "Cols":[
+        { "type": "str", "size": 4, "name": "id", "required": false },
+        { "type": "blob", "size": 0, "name": "logo", "required": false },
+        { "type": "str", "size": 50, "name": "user_name1", "required": false },
+        { "type": "str", "size": 50, "name": "user_name2", "required": false },
+        { "type": "str", "size": 20, "name": "currdate", "required": false },
+    ],
+    "Data":[
+        {
+            "id": "1",
+            "logo": "base64/png:<t t-esc="res_company.logo.replace('\n','').encode('utf-8')"/>",
+            "user_name1": "<t t-esc="user.name" />",
+            "user_name2": "<t t-esc="request.env.user.name" />",
+            "currdate": "<t t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d %H:%M')"/>:<t t-esc="datetime.datetime.now().strftime('%Y-%m-%d %H:%M')"/> ",  /*<t t-usertime="%Y-%m-%d %H:%M:%S" />*/
+        }
+    ]
+}
+
+//生成表结构
+var _tableOrder = {
+    "Name": "Order",
+    "Cols":[
+        { "type": "str", "size": 4, "name": "logo_id", "required": false },
+        { "type": "str", "size": 30, "name": "id", "required": false },
+        { "type": "str", "size": 255, "name": "inv_address", "required": false },
+        { "type": "str", "size": 255, "name": "inv_name", "required": false },
+        { "type": "str", "size": 30, "name": "inv_phone", "required": false },
+        { "type": "str", "size": 30, "name": "inv_fax", "required": false },
+        { "type": "str", "size": 255, "name": "partner_address", "required": false },
+        { "type": "str", "size": 255, "name": "partner_name", "required": false },
+        { "type": "str", "size": 30, "name": "partner_vat", "required": false },
+        { "type": "str", "size": 20, "name": "order_name", "required": false },
+        { "type": "str", "size": 20, "name": "client_order_ref", "required": false },
+        { "type": "str", "size": 30, "name": "date_order", "required": false },
+        { "type": "str", "size": 30, "name": "salesperson", "required": false },
+        { "type": "str", "size": 30, "name": "payment_term_id", "required": false },
+        { "type": "float", "size": 0, "name": "amount_untaxed", "required": false },
+        { "type": "float", "size": 0, "name": "amount_total", "required": false },
+        { "type": "str", "size": 100, "name": "note", "required": false },
+        { "type": "str", "size": 100, "name": "payment_term_note", "required": false },
+        { "type": "str", "size": 100, "name": "fiscal_position_note", "required": false },
+        { "type": "str", "size": 10, "name": "state", "required": false },  /*订单状态，draft 或 sent 表示询价单，其他表示订单*/
+    ],
+    "Data":[ ]
+};
+
+var _tableOrderLines = {
+    "Name": "OrderLines",
+    "Cols":[
+        { "type": "str", "size": 30, "name": "order_id", "required": false },
+        { "type": "str", "size": 30, "name": "line_name", "required": false },
+        { "type": "float", "size": 0, "name": "product_uom_qty", "required": false },
+        { "type": "str", "size": 10, "name": "product_uom", "required": false },
+        { "type": "float", "size": 0, "name": "price_unit", "required": false },
+        { "type": "float", "size": 0, "name": "discount", "required": false },
+        { "type": "str", "size": 50, "name": "tax_description", "required": false },
+        { "type": "str", "size": 50, "name": "tax_name", "required": false },
+        { "type": "float", "size": 0, "name": "price_subtotal", "required": false },
+        { "type": "float", "size": 0, "name": "price_total", "required": false },
+        { "type": "float", "size": 0, "name": "subtotal", "required": false }
+    ],
+    "Data":[ ]
+};
+
+/*生成主表数据*/
+<t t-foreach="docs" t-as="doc">
+    <t t-set="doc" t-value="doc.with_context({'lang':doc.partner_id.lang})" />
+_tableOrder.Data.push(
+{
+    "id": "<t t-esc="doc.id"/>",
+    "logo_id": "1",
+    "inv_address": "<span t-field="doc.partner_invoice_id" t-field-options='{"widget": "contact", "fields": ["address"], "no_marker": true, "no_tag_br": true, "data_type": "raw"}'/>",
+    "inv_name": "<t t-esc="doc.partner_invoice_id.name"/>",
+    "inv_phone": "<t t-esc="doc.partner_invoice_id.phone"/>",
+    "inv_fax": "<t t-esc="doc.partner_invoice_id.fax"/>",
+    "partner_address": "<span t-field="doc.partner_id" t-field-options='{"widget": "contact", "fields": ["address"], "no_marker": true, "no_tag_br": true, "data_type": "raw"}' />",
+    "partner_name": "<t t-esc="doc.partner_id.name"/>",
+    "partner_vat": "<t t-esc="doc.partner_id.vat"/>",
+    "order_name": "<t t-esc="doc.name"/>",
+    "client_order_ref": "<t t-if="doc.client_order_ref"><t t-esc="doc.client_order_ref"/></t>",
+    "date_order": "<t t-if="doc.date_order"><t t-esc="doc.date_order"/></t>",
+    "salesperson": "<t t-if="doc.user_id.name"><t t-esc="doc.user_id.name"/></t>",
+    "payment_term_id": "<t t-if="doc.payment_term_id"><t t-esc="doc.payment_term_id"/></t>",
+    "amount_untaxed": "<t t-esc="doc.amount_untaxed"/>",
+    "amount_total": "<t t-esc="doc.amount_total"/>",
+    "note": "<t t-esc="doc.note"/>",
+    "payment_term_note": "<t t-if="doc.payment_term_id.note"><t t-esc="doc.payment_term_id.note"/></t>",
+    "fiscal_position_note": "<t t-if="doc.fiscal_position_id and doc.fiscal_position_id.note"><t t-esc="doc.fiscal_position_id.note"/></t>"
+});
+
+/*生成从表数据*/
+<t t-foreach="doc.order_lines_layouted()" t-as="page">
+    <t t-foreach="page" t-as="layout_category">
+        <t t-foreach="layout_category['lines']" t-as="l">
+            <t t-if="(layout_category_size > 1 or page_size > 1) and layout_category['subtotal']" groups="sale.group_sale_layout">
+                <t t-set="subtotal" t-value="sum(line.price_subtotal for line in layout_category['lines'])"/>
+            </t>
+            <t t-set="line_name" t-value="l.name.replace('\n','').encode('utf-8')"/>
+_tableOrderLines.Data.push(
+{
+    "order_id": "<t t-esc="doc.id"/>",     //主从表关联字段，对应order表的id
+    "line_name": "<t t-esc="line_name"/>",
+    "product_uom_qty": "<t t-esc="l.product_uom_qty"/>",
+    "product_uom": "<t t-esc="l.product_uom"/>",
+    "price_unit": <t t-esc="l.price_unit"/>,
+    "discount": <t t-esc="l.discount"/>,
+    "tax_description": "<t t-esc="l.tax_id.description"/>",
+    "tax_name": "<t t-esc="l.tax_id.name"/>",
+    "price_subtotal": "<t t-esc="l.price_subtotal"/>",
+    "price_total": "<t t-esc="l.price_total"/>",
+    "subtotal": "<t t-esc="subtotal"/>",
+});
+        </t>
+    </t>
+</t>
+
+</t>
+/*数据合并到总的数据对象*/
+_data["Tables"].push(_tableLogo);
+_data["Tables"].push(_tableOrder);
+_data["Tables"].push(_tableOrderLines);
+var _reportData = JSON.stringify(_data);  //转成json字符串
+
+console.log(_reportData);
+//生成数据之后，在cfprint_ext.js中会自动调用进行打印
+
+</script>
+</template>
+
+<template id="report_saleorder">
+    <t t-call="report.html_container">
+        <t t-call="cfreport_demo.report_saleorder_document"/>
+    </t>
+</template>
+<!-- 订单/询价单 结束-->
+
+<!-- ********************************************* -->
+
+<!-- 产品标签 -->
+<template id="report_simple_label">
+    <t t-call="report.html_container">
+        <h3 style="margin-top: 3rem; text-align: center;">正在打印，请稍候...</h3>
+<!--必须先安装cfprint模块，以引入基础类库-->
+<script type="text/javascript">
+var cfprint_addr = "127.0.0.1";   //打印服务器监听地址
+var _delay_close = -1;          //打印完成后关闭窗口的延时时长(毫秒), -1则表示不关闭
+
+//生成表结构
+var _tableLabel = {
+    "Name": "ProductLabel",
+    "Cols":[
+        { "type": "str", "size": 255, "name": "default_code", "required": false },
+        { "type": "str", "size": 255, "name": "product_name", "required": false },
+        { "type": "str", "size": 30, "name": "barcode", "required": false },
+        { "type": "str", "size": 4, "name": "currency_symbol", "required": false },
+        { "type": "float", "size": 0, "name": "list_price", "required": false },
+        { "type": "str", "size": 255, "name": "attribute_names", "required": false },
+    ],
+    "Data":[ ]
+};
+<t t-foreach="docs" t-as="product">
+    <t t-set="att_name" t-value="''"/>
+    <t t-if="'attribute_value_ids' in product.fields_get()" t-set="att_name" t-value="';'.join([a.attribute_id.name + ': ' + a.name for a in product.attribute_value_ids ])" />
+/*生成主表数据*/
+_tableLabel.Data.push(
+{
+    "default_code": "<t t-if="product.default_code" t-esc="product.default_code"/>",
+    "product_name": "<t t-if="product.name" t-esc="product.name"/>",
+    "barcode": "<t t-if="product.barcode" t-esc="product.barcode"/>",
+    "currency_symbol": "<t t-if="product.company_id and product.company_id.currency_id and product.company_id.currency_id.symbol" t-esc="product.company_id.currency_id.symbol"/>",
+    "list_price": "<t t-if="product.list_price" t-esc="product.list_price"/>",
+    "attribute_names" : "<t t-if="att_name" t-esc="att_name"/>",
+});
+</t>
+
+/*数据合并到总的数据对象*/
+var _data = {"template": "product_label.fr3", "ver": 4, "Copies": 1, "Duplex": 0, "Tables":[]};
+_data["Tables"].push(_tableLabel);
+var _reportData = JSON.stringify(_data);  //转成json字符串
+
+console.log(_reportData);
+//生成数据之后，在cfprint_ext.js中会自动调用进行打印
+
+</script>
+        </t>
+</template>
+
+<template id="report_productlabel">
+    <t t-call="cfreport_demo.report_simple_label" />
+</template>
+
+<template id="report_producttemplatelabel">
+    <t t-call="cfreport_demo.report_simple_label" />
+</template>
+
+<!-- 产品标签 结束 -->
+
+<!-- 产品批次码标签 -->
+<template id="report_stock_production_lots_label">
+    <t t-call="report.html_container">
+        <h3 style="margin-top: 3rem; text-align: center;">
+            <t t-if="len(docs) &gt; 0">正在打印，请稍候...</t>
+            <t t-if="len(docs) &lt;= 0">没有可以打印数据。</t>
+        </h3>
+<!--必须先安装cfprint模块，以引入基础类库-->
+<script type="text/javascript">
+var cfprint_addr = "127.0.0.1";   //打印服务器监听地址
+var _delay_close = -1;          //打印完成后关闭窗口的延时时长(毫秒), -1则表示不关闭
+
+//生成表结构
+var _tableLabel = {
+    "Name": "ProductLotsLabel",
+    "Cols":[
+        { "type": "str", "size": 255, "name": "name", "required": false },
+        { "type": "str", "size": 255, "name": "product_name", "required": false },
+        { "type": "str", "size": 255, "name": "product_default_code", "required": false },
+        { "type": "int", "size": 0, "name": "product_qty", "required": false },
+        { "type": "str", "size": 10, "name": "product_uom_id", "required": false },
+        { "type": "str", "size": 20, "name": "ref", "required": false },
+        { "type": "date", "size": 0, "name": "create_date", "required": false },
+    ],
+    "Data":[ ]
+};
+<t t-foreach="docs" t-as="doc">
+    <t t-set="doc" t-value="doc.with_context({'lang':user.lang})" />
+/*生成主表数据*/
+_tableLabel.Data.push(
+{
+    "name": "<t t-if="doc.name" t-esc="doc.name"/>",
+    "product_name": "<t t-if="doc.product_id" t-esc="doc.product_id.name"/>",
+    "product_default_code": "<t t-if="doc.product_id" t-esc="doc.product_id.default_code"/>",
+    "product_qty": "<t t-if="doc.product_qty" t-esc="doc.product_qty"/>",
+    "product_uom_id": "<t t-if="doc.product_uom_id" t-esc="doc.product_uom_id.name"/>",
+    "ref": "<t t-if="doc.ref" t-esc="doc.ref"/>",
+    "create_date" : "<t t-esc="doc.create_date"/>",
+});
+</t>
+
+/*数据合并到总的数据对象*/
+var _data = {"template": "product_lots_label.fr3", "ver": 4, "Copies": 1, "Duplex": 0, "Tables":[]};
+_data["Tables"].push(_tableLabel);
+var _reportData = JSON.stringify(_data);  //转成json字符串
+
+console.log(_reportData);
+//生成数据之后，在cfprint_ext.js中会自动调用进行打印
+
+</script>
+        </t>
+</template>
+<!-- 产品批次码标签 结束 -->
+
+    </data>
+</odoo>
+

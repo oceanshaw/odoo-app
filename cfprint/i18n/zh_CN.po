@@ -1,0 +1,286 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* cfprint
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 10.0+e-20171005\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-10-24 10:37+0000\n"
+"PO-Revision-Date: 2018-10-24 10:37+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: cfprint
+#: code:addons/cfprint/ir/ir_qweb/fields.py:381
+#, python-format
+msgid "A unit must be provided to duration widgets"
+msgstr "必须给时间控件指定单位"
+
+#. module: cfprint
+#: model:ir.module.category,name:cfprint.module_cfprint
+#: model:ir.ui.menu,name:cfprint.menu_cf_root
+msgid "CFPrint"
+msgstr "康虎云报表"
+
+#. module: cfprint
+#: model:ir.actions.act_window,name:cfprint.action_cf_template_category
+msgid "CFPrint Template Category Management"
+msgstr "康虎云报表模板分类"
+
+#. module: cfprint
+#: model:ir.actions.act_window,name:cfprint.action_cf_template
+msgid "CFPrint Template Management"
+msgstr "康虎云报表模板管理"
+
+#. module: cfprint
+#: model:ir.ui.view,arch_db:cfprint.cf_template_list
+msgid "CFPrint Templates"
+msgstr "康虎云报表模板"
+
+#. module: cfprint
+#: model:ir.ui.view,arch_db:cfprint.cf_template_category_list
+msgid "CFPrint Templates Category"
+msgstr "康虎云报表模板分类"
+
+#. module: cfprint
+#: model:ir.model.fields,field_description:cfprint.field_cf_template_category_id_6409
+#: model:ir.model.fields,field_description:cfprint.field_cf_template_history_category_id
+msgid "Category"
+msgstr "类别"
+
+#. module: cfprint
+#: model:ir.model.fields,field_description:cfprint.field_cf_template_category_name
+msgid "Category Name"
+msgstr "分类名称"
+
+#. module: cfprint
+#: model:ir.model.fields,help:cfprint.field_cf_template_history_template
+#: model:ir.model.fields,help:cfprint.field_cf_template_template
+msgid "Content of template"
+msgstr "模板内容"
+
+#. module: cfprint
+#: model:ir.model.fields,field_description:cfprint.field_cf_template_category_create_uid
+#: model:ir.model.fields,field_description:cfprint.field_cf_template_create_uid
+#: model:ir.model.fields,field_description:cfprint.field_cf_template_history_create_uid
+msgid "Created by"
+msgstr "创建人"
+
+#. module: cfprint
+#: model:ir.model.fields,field_description:cfprint.field_cf_template_category_create_date
+#: model:ir.model.fields,field_description:cfprint.field_cf_template_create_date
+#: model:ir.model.fields,field_description:cfprint.field_cf_template_history_create_date
+msgid "Created on"
+msgstr "创建时间"
+
+#. module: cfprint
+#: model:ir.model.fields,field_description:cfprint.field_cf_template_description
+#: model:ir.model.fields,field_description:cfprint.field_cf_template_history_description
+msgid "Description"
+msgstr "说明"
+
+#. module: cfprint
+#: model:ir.model.fields,field_description:cfprint.field_cf_template_category_display_name
+#: model:ir.model.fields,field_description:cfprint.field_cf_template_display_name
+#: model:ir.model.fields,field_description:cfprint.field_cf_template_history_display_name
+msgid "Display Name"
+msgstr "显示名称"
+
+#. module: cfprint
+#: model:ir.ui.menu,name:cfprint.menu_cf_download_cfprint
+msgid "Download CFPring"
+msgstr "Download CFPring"
+
+#. module: cfprint
+#: code:addons/cfprint/ir/ir_qweb/fields.py:378
+#, python-format
+msgid "Durations can't be negative"
+msgstr "时长不能为负数"
+
+#. module: cfprint
+#: model:ir.model.fields,field_description:cfprint.field_cf_template_templ_histories
+msgid "History"
+msgstr "历史"
+
+#. module: cfprint
+#: code:addons/cfprint/models/cf_templates.py:260
+#: model:ir.model,name:cfprint.model_cf_template_history
+#, python-format
+msgid "History of report templates of CFPrint"
+msgstr "康虎云报表模板历史版本"
+
+#. module: cfprint
+#: model:ir.model.fields,help:cfprint.field_cf_template_templ_histories
+msgid "History of template"
+msgstr "模板历史版本"
+
+#. module: cfprint
+#: model:ir.model.fields,field_description:cfprint.field_cf_template_category_id
+#: model:ir.model.fields,field_description:cfprint.field_cf_template_history_id
+#: model:ir.model.fields,field_description:cfprint.field_cf_template_id
+msgid "ID"
+msgstr "ID"
+
+#. module: cfprint
+#: model:ir.model.fields,field_description:cfprint.field_cf_template___last_update
+#: model:ir.model.fields,field_description:cfprint.field_cf_template_category___last_update
+#: model:ir.model.fields,field_description:cfprint.field_cf_template_history___last_update
+msgid "Last Modified on"
+msgstr "最后修改日"
+
+#. module: cfprint
+#: model:ir.model.fields,field_description:cfprint.field_cf_template_category_write_uid
+#: model:ir.model.fields,field_description:cfprint.field_cf_template_history_write_uid
+#: model:ir.model.fields,field_description:cfprint.field_cf_template_write_uid
+msgid "Last Updated by"
+msgstr "最后更新人"
+
+#. module: cfprint
+#: model:ir.model.fields,field_description:cfprint.field_cf_template_category_write_date
+#: model:ir.model.fields,field_description:cfprint.field_cf_template_history_write_date
+#: model:ir.model.fields,field_description:cfprint.field_cf_template_write_date
+msgid "Last Updated on"
+msgstr "最后更新时间"
+
+#. module: cfprint
+#: model:ir.ui.view,arch_db:cfprint.cf_template_view
+msgid "Manage CFPrint Template"
+msgstr "管理康虎云报表模板"
+
+#. module: cfprint
+#: model:ir.ui.view,arch_db:cfprint.cf_template_category_form
+msgid "Manage CFPrint Template Category"
+msgstr "管理康虎云报表模板分类"
+
+#. module: cfprint
+#: model:res.groups,name:cfprint.cfprint_group_manager
+msgid "Manager"
+msgstr "管理员"
+
+#. module: cfprint
+#: model:ir.model.fields,field_description:cfprint.field_cf_template_history_name
+#: model:ir.model.fields,field_description:cfprint.field_cf_template_name
+msgid "Name"
+msgstr "名字"
+
+#. module: cfprint
+#: model:ir.model.fields,field_description:cfprint.field_cf_template_history_origin
+msgid "Origin Template"
+msgstr "原始模板"
+
+#. module: cfprint
+#: model:ir.model.fields,help:cfprint.field_cf_template_history_preview_img
+#: model:ir.model.fields,help:cfprint.field_cf_template_preview_img
+msgid "Picture used to preview a report"
+msgstr "预览该模板效果的图片"
+
+#. module: cfprint
+#: model:ir.model.fields,field_description:cfprint.field_cf_template_history_preview_img
+#: model:ir.model.fields,field_description:cfprint.field_cf_template_preview_img
+msgid "Preview image"
+msgstr "预览图"
+
+#. module: cfprint
+#: model:ir.model,name:cfprint.model_report
+msgid "Report"
+msgstr "报表"
+
+#. module: cfprint
+#: code:addons/cfprint/models/cf_templates.py:194
+#: model:ir.model,name:cfprint.model_cf_template_category
+#, python-format
+msgid "Report templates category of CFPrint"
+msgstr "康虎云报表模板分类"
+
+#. module: cfprint
+#: code:addons/cfprint/models/cf_templates.py:209
+#: model:ir.model,name:cfprint.model_cf_template
+#, python-format
+msgid "Report templates of CFPrint"
+msgstr "康虎云报表模板"
+
+#. module: cfprint
+#: sql_constraint:cf.template.history:0
+msgid "Same version and template ID already exists!"
+msgstr "同一模板ID相同版本记录已存在"
+
+#. module: cfprint
+#: model:ir.model.fields,field_description:cfprint.field_cf_template_history_template
+#: model:ir.model.fields,field_description:cfprint.field_cf_template_template
+msgid "Template"
+msgstr "模板"
+
+#. module: cfprint
+#: model:ir.model.fields,field_description:cfprint.field_cf_template_template_filename
+msgid "Template Filename"
+msgstr "模板文件名"
+
+#. module: cfprint
+#: model:ir.model.fields,field_description:cfprint.field_cf_template_history_templ_id
+#: model:ir.model.fields,field_description:cfprint.field_cf_template_templ_id
+msgid "Template ID"
+msgstr "模板ID"
+
+#. module: cfprint
+#: sql_constraint:cf.template:0
+msgid "Template ID already exists!"
+msgstr "模板ID已存在!"
+
+#. module: cfprint
+#: sql_constraint:cf.template.category:0
+msgid "Template category name already exists!"
+msgstr "分类名称已存在"
+
+#. module: cfprint
+#: model:ir.model.fields,field_description:cfprint.field_cf_template_category_lines
+#: model:ir.ui.menu,name:cfprint.menu_cf_template
+#: model:ir.ui.view,arch_db:cfprint.cf_template_category_form
+msgid "Templates"
+msgstr "模板"
+
+#. module: cfprint
+#: model:ir.ui.menu,name:cfprint.menu_cf_download_cfprint
+msgid "Download CFPrint"
+msgstr "下载康虎云报表"
+
+#. module: cfprint
+#: model:ir.ui.menu,name:cfprint.menu_cf_template_category
+msgid "Templates Category"
+msgstr "模板分类"
+
+#. module: cfprint
+#: model:ir.model.fields,help:cfprint.field_cf_template_history_templ_id
+#: model:ir.model.fields,help:cfprint.field_cf_template_templ_id
+msgid "Unique ID of template"
+msgstr "模板的唯一ID"
+
+#. module: cfprint
+#: model:res.groups,name:cfprint.cfprint_group_user
+msgid "User"
+msgstr "用户"
+
+#. module: cfprint
+#: model:ir.model.fields,field_description:cfprint.field_cf_template_history_version
+msgid "Version"
+msgstr "版本"
+
+#. module: cfprint
+#: model:ir.ui.view,arch_db:cfprint.cf_template_view
+msgid "Version History"
+msgstr "版本历史"
+
+#. module: cfprint
+#: model:ir.model.fields,help:cfprint.field_cf_template_history_version
+msgid "Version of template"
+msgstr "模板版本"
+
+#. module: cfprint
+#: model:ir.model,name:cfprint.model_ir_qweb
+msgid "ir.qweb"
+msgstr "ir.qweb"
+

@@ -1,0 +1,211 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* cf_report_designer
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 10.0+e-20171005\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-11-06 16:56+0000\n"
+"PO-Revision-Date: 2018-11-07 00:58+0800\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"Language: zh_CN\n"
+"X-Generator: Poedit 1.8.11\n"
+
+#. module: cf_report_designer
+#: model:ir.actions.act_window,name:cf_report_designer.act_cf_report_define_win
+msgid "CF Report Define Window"
+msgstr "报表定义"
+
+#. module: cf_report_designer
+#: model:ir.actions.act_window,name:cf_report_designer.act_cf_cfprint_license_win
+msgid "CFPrint License Window"
+msgstr "康虎云报表许可证"
+
+#. module: cf_report_designer
+#: model:ir.model.fields,field_description:cf_report_designer.field_cf_cfprint_license_create_uid
+#: model:ir.model.fields,field_description:cf_report_designer.field_cf_report_define_create_uid
+#: model:ir.model.fields,field_description:cf_report_designer.field_cf_report_define_field_create_uid
+msgid "Created by"
+msgstr "创建人"
+
+#. module: cf_report_designer
+#: model:ir.model.fields,field_description:cf_report_designer.field_cf_cfprint_license_create_date
+#: model:ir.model.fields,field_description:cf_report_designer.field_cf_report_define_create_date
+#: model:ir.model.fields,field_description:cf_report_designer.field_cf_report_define_field_create_date
+msgid "Created on"
+msgstr "创建时间"
+
+#. module: cf_report_designer
+#: model:ir.ui.view,arch_db:cf_report_designer.cf_report_define_form
+msgid "Design"
+msgstr "设计打印模板"
+
+#. module: cf_report_designer
+#: model:ir.model.fields,field_description:cf_report_designer.field_cf_cfprint_license_display_name
+#: model:ir.model.fields,field_description:cf_report_designer.field_cf_report_define_display_name
+#: model:ir.model.fields,field_description:cf_report_designer.field_cf_report_define_field_display_name
+msgid "Display Name"
+msgstr "显示名称"
+
+#. module: cf_report_designer
+#: model:ir.ui.view,arch_db:cf_report_designer.cf_report_define_form
+msgid "Generate"
+msgstr "生成报表信息"
+
+#. module: cf_report_designer
+#: model:ir.model.fields,field_description:cf_report_designer.field_cf_cfprint_license_id
+#: model:ir.model.fields,field_description:cf_report_designer.field_cf_report_define_field_id
+#: model:ir.model.fields,field_description:cf_report_designer.field_cf_report_define_id
+msgid "ID"
+msgstr "ID"
+
+#. module: cf_report_designer
+#: model:ir.model.fields,field_description:cf_report_designer.field_cf_cfprint_license___last_update
+#: model:ir.model.fields,field_description:cf_report_designer.field_cf_report_define___last_update
+#: model:ir.model.fields,field_description:cf_report_designer.field_cf_report_define_field___last_update
+msgid "Last Modified on"
+msgstr "最后修改日"
+
+#. module: cf_report_designer
+#: model:ir.model.fields,field_description:cf_report_designer.field_cf_cfprint_license_write_uid
+#: model:ir.model.fields,field_description:cf_report_designer.field_cf_report_define_field_write_uid
+#: model:ir.model.fields,field_description:cf_report_designer.field_cf_report_define_write_uid
+msgid "Last Updated by"
+msgstr "最后更新人"
+
+#. module: cf_report_designer
+#: model:ir.model.fields,field_description:cf_report_designer.field_cf_cfprint_license_write_date
+#: model:ir.model.fields,field_description:cf_report_designer.field_cf_report_define_field_write_date
+#: model:ir.model.fields,field_description:cf_report_designer.field_cf_report_define_write_date
+msgid "Last Updated on"
+msgstr "最后更新时间"
+
+#. module: cf_report_designer
+#: model:ir.ui.menu,name:cf_report_designer.menu_cf_cfprint_license
+msgid "License"
+msgstr "授权许可"
+
+#. module: cf_report_designer
+#: model:ir.model,name:cf_report_designer.model_ir_model
+msgid "Models"
+msgstr "模型"
+
+#. module: cf_report_designer
+#: model:ir.ui.view,arch_db:cf_report_designer.cf_cfprint_license_form
+msgid "QQ群：583804904"
+msgstr "QQ群：583804904"
+
+#. module: cf_report_designer
+#: model:ir.ui.view,arch_db:cf_report_designer.cf_cfprint_license_form
+msgid "QQ：360026606"
+msgstr "QQ：360026606"
+
+#. module: cf_report_designer
+#: model:ir.model,name:cf_report_designer.model_report
+msgid "Report"
+msgstr "报表"
+
+#. module: cf_report_designer
+#: model:ir.ui.menu,name:cf_report_designer.menu_cf_report_define
+msgid "Report Define"
+msgstr "定义报表"
+
+#. module: cf_report_designer
+#: model:ir.ui.view,arch_db:cf_report_designer.cf_report_define_form
+msgid "Retrieve Fields"
+msgstr "获取字段"
+
+#. module: cf_report_designer
+#: model:ir.ui.view,arch_db:cf_report_designer.cf_report_define_field_form
+msgid "Retrieve Sub Fields"
+msgstr "获取子表字段"
+
+#. module: cf_report_designer
+#: model:ir.model.fields,help:cf_report_designer.field_cf_report_define_field_model_id
+msgid "字段所在的model"
+msgstr "字段所在的model"
+
+#. module: cf_report_designer
+#: model:ir.ui.view,arch_db:cf_report_designer.cf_cfprint_license_form
+msgid "微信：360026606"
+msgstr "微信：360026606"
+
+#. module: cf_report_designer
+#: model:ir.model.fields,field_description:cf_report_designer.field_cf_report_define_name
+msgid "报表ID"
+msgstr "报表ID"
+
+#. module: cf_report_designer
+#: model:ir.ui.view,arch_db:cf_report_designer.cf_report_define_form
+msgid "报表取数的数据表(model)"
+msgstr "报表取数的数据表(model)"
+
+#. module: cf_report_designer
+#: model:ir.model.fields,help:cf_report_designer.field_cf_report_define_model_id
+msgid "报表对应的数据表(model)"
+msgstr "报表对应的数据表(model)"
+
+#. module: cf_report_designer
+#: code:addons/cf_report_designer/models/models.py:396
+#, python-format
+msgid "指定的报表模板未定义或模板无内容，请先设计模板并更新到模板记录表。</h3>"
+msgstr "指定的报表模板未定义或模板无内容，请先设计模板并更新到模板记录表。</h3>"
+
+#. module: cf_report_designer
+#: model:ir.model.fields,help:cf_report_designer.field_cf_cfprint_license_license
+msgid "授权许可证文件，下载后改名为cfprint.lic放到客户端cfprint目录下。"
+msgstr "授权许可证文件，下载后改名为cfprint.lic放到客户端cfprint目录下。"
+
+#. module: cf_report_designer
+#: model:ir.model.fields,field_description:cf_report_designer.field_cf_report_define_model_id
+msgid "数据表(model)"
+msgstr "数据表(model)"
+
+#. module: cf_report_designer
+#: code:addons/cf_report_designer/models/models.py:329
+#, python-format
+msgid "生成康虎云报表打印数据出错。model: %s, field: %s"
+msgstr "生成康虎云报表打印数据出错。model: %s, field: %s"
+
+#. module: cf_report_designer
+#: model:ir.model.fields,help:cf_report_designer.field_cf_report_define_name
+msgid "用一确定报表的唯一ID，只允许英文、数字和下划线。"
+msgstr "用一确定报表的唯一ID，只允许英文、数字和下划线。"
+
+#. module: cf_report_designer
+#: code:addons/cf_report_designer/models/models.py:98
+#, python-format
+msgid "请先指定报表ID！"
+msgstr "请先指定报表ID！"
+
+#. module: cf_report_designer
+#: code:addons/cf_report_designer/models/models.py:379
+#, python-format
+msgid ""
+"请在康虎云报表设计器设计报表。<br/>\n"
+"            如果报表设计器未打开，请检查康虎云报表是否已启动！<br/><br/><br/>\n"
+"            模板设计完成后，请在odoo菜单“康虎云报表”--&gt;“模板”菜单中，打开模板记录上传或更新模板！<br/><br/>\n"
+"            <a href=\"cfprint://open\">启动康虎云报表</a>\n"
+"            "
+msgstr ""
+"请在康虎云报表设计器设计报表。<br/>\n"
+"            如果报表设计器未打开，请检查康虎云报表是否已启动！<br/><br/><br/>\n"
+"            模板设计完成后，请在odoo菜单“康虎云报表”--&gt;“模板”菜单中，打开模板记录上传或更新模板！<br/><br/>\n"
+"            <a href=\"cfprint://open\">启动康虎云报表</a>\n"
+"            "
+
+#. module: cf_report_designer
+#: model:ir.ui.view,arch_db:cf_report_designer.cf_report_define_form
+msgid "请输入报表ID(只允许英文字母、数字和下划线)"
+msgstr "请输入报表ID(只允许英文字母、数字和下划线)"
+
+#. module: cf_report_designer
+#: model:ir.actions.report.xml,name:cf_report_designer.report_sale_order
+msgid "销售订单测试[CFPrint]"
+msgstr "销售订单测试[CFPrint]"

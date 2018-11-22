@@ -1,0 +1,27 @@
+﻿<section class="oe_container">
+    <div class="oe_row oe_spaced">
+        <div class="oe_span12">
+            <h2 class="oe_slogan">日历选择插件</h2>
+            <h3 class="oe_slogan">VNSOFT(QQ:9181720)</h3>
+        </div>
+        <div class="oe_span12">
+            <p class="oe_mt32">
+                举个栗子：<br/>
+                &lt;field name='date' minDate='0'/> 最小日期为当天<br/>
+                &lt;field name='date' minDate='-1'/> 最小日期为前一天（-2为前天，依次类推）<br/>
+                &lt;field name='date' minDate='1'/> 最小日期为后一天（2为后两天，依次类推）<br/>
+                &lt;field name='date' minDate='start_date'/> 最小日期以start_date为准，如果start_date没有值，则不限制<br/>
+                &lt;field name='date' maxDate='0'/> 最大日期为当天<br/>
+                &lt;field name='date' maxDate='-1'/> 最大日期为前一天（-2为前天，依次类推）<br/>
+                &lt;field name='date' maxDate='1'/> 最大日期为后一天（2为后两天，依次类推）<br/>
+                &lt;field name='date' maxDate='start_date'/> 最大日期以start_date为准，如果start_date没有值，则不限制<br/>
+                <br/>
+                如果有起迄日期两个字段，我们可以这样设置:<br/>
+                &lt;field name='date_start' maxDate='date_end'/><br/>
+                &lt;field name='date_end' minDate='date_start'/><br/>
+
+            </p>
+        </div>
+
+    </div>
+</section>

@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="web.adminlte_header" name="AdminLTE-Header">
+        <header class="main-header" style="flex: 0 0 auto">
+            <!-- Logo -->
+            <a href="#" class="logo">
+                <!-- mini logo for sidebar mini 50x50 pixels -->
+                <span class="logo-mini">中国化</span>
+                <!-- logo for regular state and mobile devices -->
+                <span class="logo-lg">odoo中国化翻译组<img src='/web/binary/company_logo'/></span>
+                
+            </a>
+            <!-- Header Navbar: style can be found in header.less -->
+            <nav class="navbar navbar-static-top">
+                <!-- Sidebar toggle button-->
+                <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+                    <span class="sr-only">Toggle navigation</span>
+                </a>
+
+                <div class="navbar-custom-menu oe-navbar-header">
+
+
+                    <ul class="nav navbar-nav navbar-right oe_user_menu_placeholder" style="display: none; margin-right:0"/>
+                    <ul class="nav navbar-nav navbar-right oe_systray" style="display: none;"/>
+                    <ul class="nav navbar-nav navbar-right">
+                        <!--<li class="dropdown user user-menu">-->
+                            <!--<a href="#" class="dropdown-toggle" data-toggle="dropdown">-->
+                                <!--<img src="/web_adminlte/static/temp/img/user2-160x160.jpg" class="user-image"-->
+                                     <!--alt="User Image"/>-->
+                                <!--<span class="hidden-xs">Alexander Pierce</span>-->
+                            <!--</a>-->
+                            <!--<ul class="dropdown-menu">-->
+                                <!--&lt;!&ndash; Menu Footer&ndash;&gt;-->
+                                <!--<li class="user-footer">-->
+                                    <!--<div class="pull-left">-->
+                                        <!--<a href="#" class="btn btn-default btn-flat">Profile</a>-->
+                                    <!--</div>-->
+                                    <!--<div class="pull-right">-->
+                                        <!--<a href="#" class="btn btn-default btn-flat">Sign out</a>-->
+                                    <!--</div>-->
+                                <!--</li>-->
+                            <!--</ul>-->
+                        <!--</li>-->
+                        <!-- Control Sidebar Toggle Button -->
+                        <li class="o_control_sidebar">
+                            <a href="#" data-toggle="control-sidebar">
+                                <i class="fa fa-gears"/>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+    </template>
+
+    <template id="web.adminlte_menu_secondary">
+            <t t-if="menu['children']">
+                <ul class="treeview-menu">
+
+                    <t t-foreach="menu['children']" t-as="menu">
+                        <t t-if="menu['children']">
+                            <li class="treeview">
+                                <a t-att-href="'/mentormedia_system%s#menu_id=%s&amp;action=%s' % (debug_param, menu['id'], menu['action'] and menu['action'].split(',')[1] or '')"
+                                    t-att-data-menu="menu['id']"
+                                    t-att-data-menu-xmlid="menu.get('xmlid')"
+                                    t-att-data-action-model="menu['action'] and menu['action'].split(',')[0] or None"
+                                    t-att-data-action-id="menu['action'] and menu['action'].split(',')[1] or None"
+                                    t-att-data-top-menu="top_menu_id">
+                                    <t t-esc="menu['name']"/>
+                                    <span class="pull-right-container">
+                                        <i class="fa fa-angle-left pull-right"/>
+                                    </span>
+                                </a>
+                                <t t-call="web.adminlte_menu_secondary"/>
+                            </li>
+                        </t>
+                        <t t-else="">
+                            <li>
+                                <a t-att-href="'/mentormedia_system%s#menu_id=%s&amp;action=%s' % (debug_param, menu['id'], menu['action'] and menu['action'].split(',')[1] or '')"
+                                    t-att-data-menu="menu['id']"
+                                    t-att-data-menu-xmlid="menu.get('xmlid')"
+                                    t-att-data-action-model="menu['action'] and menu['action'].split(',')[0] or None"
+                                    t-att-data-action-id="menu['action'] and menu['action'].split(',')[1] or None"
+                                    t-att-data-top-menu="top_menu_id">
+                                    <!--<i class="fa fa-circle-o"/>-->
+                                    <span><t t-esc="menu['name']"/></span>
+                                </a>
+                            </li>
+                        </t>
+                    </t>
+                </ul>
+            </t>
+    </template>
+    <template id="web.adminlte_menu">
+
+        <t t-if="menu['children']">
+
+            <li class="treeview">
+                <a t-att-href="'/mentormedia_system%s#menu_id=%s&amp;action=%s' % (debug_param, menu['id'], menu['action'] and menu['action'].split(',')[1] or '')"
+                    t-att-data-menu="menu['id']"
+                    t-att-data-menu-xmlid="menu.get('xmlid')"
+                    t-att-data-action-model="menu['action'] and menu['action'].split(',')[0] or None"
+                    t-att-data-action-id="menu['action'] and menu['action'].split(',')[1] or None"
+                    t-att-data-top-menu="top_menu_id">
+                    <img t-attf-src="/web/image/ir.ui.menu/{{ menu['id'] }}/web_icon_data" t-att-alt="menu['name']" t-att-title="menu['name']"/>
+                    <span class="m-menu-name"><t t-esc="menu['name']"/></span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"/>
+                    </span>
+                </a>
+                <t t-call="web.adminlte_menu_secondary"/>
+            </li>
+        </t>
+        <t t-else="">
+            <li>
+                <a t-att-href="'/web%s#menu_id=%s&amp;action=%s' % (debug_param, menu['id'], menu['action'] and menu['action'].split(',')[1] or '')"
+                    t-att-data-menu="menu['id']"
+                    t-att-data-menu-xmlid="menu.get('xmlid')"
+                    t-att-data-action-model="menu['action'] and menu['action'].split(',')[0] or None"
+                    t-att-data-action-id="menu['action'] and menu['action'].split(',')[1] or None"
+                    t-att-data-top-menu="top_menu_id">
+                    <img t-attf-src="/web/image/ir.ui.menu/{{ menu['id'] }}/web_icon_data" t-att-alt="menu['name']" t-att-title="menu['name']"/>
+                    <!--<i class="fa fa-circle-o"/>-->
+                    <span><t t-esc="menu['name']"/></span>
+                </a>
+            </li>
+
+        </t>
+
+    </template>
+
+    <template id="web.adminlte_menu_root" name="AdminLTE-Menu">
+        <t t-set="debug_param" t-value="'?&amp;debug=' if debug else ''"/>
+        <aside class="main-sidebar">
+            <!-- sidebar: style can be found in sidebar.less -->
+            <section class="sidebar">
+                <!-- Sidebar user panel -->
+<!--                 <div class="user-panel">
+                    <div class="pull-left image">
+                        <img src="/web_adminlte/static/temp/img/user2-160x160.jpg" class="img-circle" alt="User Image"/>
+                        <img t-att-src="'/web/image?model=res.users&amp;field=image_small&amp;id=%s' % request.env.user.id" class="img-circle" alt="User Image"/>
+                    </div>
+                    <div class="pull-left info">
+                        <p><t t-esc="request.env.user.name"/></p>
+                        <a href="/web/session/logout">
+                            <i class="fa fa-circle text-success"/>
+                            退出
+                        </a>
+                    </div>
+                </div> -->
+                <!-- sidebar menu: : style can be found in sidebar.less -->
+                <ul class="sidebar-menu oe_application_menu_placeholder" data-widget="tree">
+                    <li class="header">主菜单</li>
+                    <t t-foreach="menu_data['children']" t-as="menu">
+                        <t t-set="top_menu_id" t-value="menu['id']"/>
+                        <t t-call="web.adminlte_menu"/>
+                    </t>
+                </ul>
+            </section>
+        </aside>
+
+    </template>
+
+    <template id="web.adminlte_control_sidebar" name="AdminLTE-Control Sidebar">
+        <aside class="control-sidebar control-sidebar-dark">
+            <div class="tab-content">
+                <div class="tab-pane active">
+                    <h4 class="control-sidebar-heading">皮肤</h4>
+                    <ul class="list-unstyled clearfix">
+                        <li>
+                            <a data-skin="skin-blue" class="clearfix full-opacity-hover">
+                                <div>
+                                    <span style="background: #367fa9"/>
+                                    <span style="background: #3c8dbc"/>
+                                </div>
+                                <div>
+                                    <span style="background: #222d32"/>
+                                    <span style="background: #f4f5f7"/>
+                                </div>
+                            </a>
+                            <p class="text-center no-margin">Blue</p>
+
+                        </li>
+                        <li>
+                            <a data-skin="skin-black" class="clearfix full-opacity-hover">
+                                <div>
+                                    <span style="background: #fefefe"/>
+                                    <span style="background: #fefefe"/>
+                                </div>
+                                <div>
+                                    <span style="background: #222d32"/>
+                                    <span style="background: #f4f5f7"/>
+                                </div>
+                            </a>
+                            <p class="text-center no-margin">Black</p>
+                        </li>
+                        <li>
+                            <a data-skin="skin-purple" class="clearfix full-opacity-hover">
+                                <div>
+                                    <span style="background: #555299"/>
+                                    <span style="background: #605ca8"/>
+                                </div>
+                                <div>
+                                    <span style="background: #222d32"/>
+                                    <span style="background: #f4f5f7"/>
+                                </div>
+                            </a>
+                            <p class="text-center no-margin">Purple</p>
+                        </li>
+                        <li>
+                            <a data-skin="skin-green" class="clearfix full-opacity-hover">
+                                <div>
+                                    <span style="background: #008d4c"/>
+                                    <span style="background: #00a65a"/>
+                                </div>
+                                <div>
+                                    <span style="background: #222d32"/>
+                                    <span style="background: #f4f5f7"/>
+                                </div>
+                            </a>
+                            <p class="text-center no-margin">Green</p>
+                        </li>
+                        <li>
+                            <a data-skin="skin-red" class="clearfix full-opacity-hover">
+                                <div>
+                                    <span style="background: #d33724"/>
+                                    <span style="background: #dd4b39"/>
+                                </div>
+                                <div>
+                                    <span style="background: #222d32"/>
+                                    <span style="background: #f4f5f7"/>
+                                </div>
+                            </a>
+                            <p class="text-center no-margin">Red</p>
+                        </li>
+                        <li>
+                            <a data-skin="skin-yellow" class="clearfix full-opacity-hover">
+                                <div>
+                                    <span style="background: #db8b0b"/>
+                                    <span style="background: #f39c12"/>
+                                </div>
+                                <div>
+                                    <span style="background: #222d32"/>
+                                    <span style="background: #f4f5f7"/>
+                                </div>
+                            </a>
+                            <p class="text-center no-margin">Yellow</p>
+                        </li>
+                        <li>
+                            <a data-skin="skin-blue-light" class="clearfix full-opacity-hover">
+                                <div>
+                                    <span style="background: #367fa9"/>
+                                    <span style="background: #3c8dbc"/>
+                                </div>
+                                <div>
+                                    <span style="background: #f9fafc"/>
+                                    <span style="background: #f4f5f7"/>
+                                </div>
+                            </a>
+                            <p class="text-center no-margin">Blue Light</p>
+                        </li>
+                        <li>
+                            <a data-skin="skin-black-light" class="clearfix full-opacity-hover">
+                                <div>
+                                    <span style="background: #fefefe"/>
+                                    <span style="background: #fefefe"/>
+                                </div>
+                                <div>
+                                    <span style="background: #f9fafc"/>
+                                    <span style="background: #f4f5f7"/>
+                                </div>
+                            </a>
+                            <p class="text-center no-margin">Black Light</p>
+                        </li>
+                        <li>
+                            <a data-skin="skin-purple-light" class="clearfix full-opacity-hover">
+                                <div>
+                                    <span style="background: #555299"/>
+                                    <span style="background: #605ca8"/>
+                                </div>
+                                <div>
+                                    <span style="background: #f9fafc"/>
+                                    <span style="background: #f4f5f7"/>
+                                </div>
+                            </a>
+                            <p class="text-center no-margin">Purple Light</p>
+                        </li>
+                        <li>
+                            <a data-skin="skin-green-light" class="clearfix full-opacity-hover">
+                                <div>
+                                    <span style="background: #008d4c"/>
+                                    <span style="background: #00a65a"/>
+                                </div>
+                                <div>
+                                    <span style="background: #f9fafc"/>
+                                    <span style="background: #f4f5f7"/>
+                                </div>
+                            </a>
+                            <p class="text-center no-margin">Green Light</p>
+                        </li>
+                        <li>
+                            <a data-skin="skin-red-light" class="clearfix full-opacity-hover">
+                                <div>
+                                    <span style="background: #d33724"/>
+                                    <span style="background: #dd4b39"/>
+                                </div>
+                                <div>
+                                    <span style="background: #f9fafc"/>
+                                    <span style="background: #f4f5f7"/>
+                                </div>
+                            </a>
+                            <p class="text-center no-margin">Red Light</p>
+                        </li>
+                        <li>
+                            <a data-skin="skin-yellow-light" class="clearfix full-opacity-hover">
+                                <div>
+                                    <span style="background: #db8b0b"/>
+                                    <span style="background: #f39c12"/>
+                                </div>
+                                <div>
+                                    <span style="background: #f9fafc"/>
+                                    <span style="background: #f4f5f7"/>
+                                </div>
+                            </a>
+                            <p class="text-center no-margin">Yellow Light</p>
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+        </aside>
+        <div class="control-sidebar-bg"/>
+    </template>
+
+    <template id="webclient_bootstrap" inherit_id="web.webclient_bootstrap" name="AdminLTE - Web Client">
+        <xpath expr="//nav[@id='oe_main_menu_navbar']" position="replace"/>
+        <xpath expr="//div[@class='o_main']" position="replace">
+            <div class="wrapper" style="display:flex; flex-direction: column;overflow:hidden">
+                <t t-call="web.adminlte_header"/>
+                <div style="flex: 1 1 auto;overflow:hidden">
+                    <t t-call="web.adminlte_menu_root"/>
+                    <t t-call="web.adminlte_control_sidebar"/>
+                    <div class="o_main_content content-wrapper"/>
+                </div>
+            </div>
+        </xpath>
+        <xpath expr="//t[@t-set='body_classname']" position="replace">
+            <t t-set="body_classname" t-value="'sidebar-mini skin-purple'"/>
+        </xpath>
+
+    </template>
+
+</odoo>

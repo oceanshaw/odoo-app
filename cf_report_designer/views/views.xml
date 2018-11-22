@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+
+    <record id="cf_report_define_list" model="ir.ui.view">
+      <field name="name">CF Report Define List</field>
+      <field name="model">cf.report.define</field>
+      <field name="comment">报表定义</field>
+      <field name="arch" type="xml">
+        <tree string="报表定义">
+          <!--<field name="sequence"/>-->
+          <field name="name"/>
+          <field name="comment"/>
+          <field name="model_id"/>
+          <field name="template_id"/>
+          <field name="use_client_templ"/>
+          <field name="client_templ_name"/>
+          <field name="company_id" invisible="1"/>
+          <field name="open_print"/>
+          <field name="note" invisible="1"/>
+        </tree>
+      </field>
+    </record>
+
+    <record id="cf_report_define_form" model="ir.ui.view">
+      <field name="name">CF Report Define From</field>
+      <field name="model">cf.report.define</field>
+      <field name="comment">报表定义</field>
+      <field name="arch" type="xml">
+        <form string="报表定义">
+          <header>
+              <button name="action_retrieve_fields" string="Retrieve Fields" type="object" class="btn-primary"/>
+              <button name="action_generate" string="Generate" type="object" class="btn-primary" attrs="{'invisible': [('field_ids','=', [])]}"/>
+              <button name="action_design" string="Design" type="object" class="btn-primary" attrs="{'invisible': [('state','!=', 'defined')]}"/>
+          </header>
+          <sheet>
+            <group>
+              <group>
+                <field name="name" required="1" placeholder="请输入报表ID(只允许英文字母、数字和下划线)"/>
+                <field name="comment" required="1" placeholder="请输入报表中文名"/>
+                <field name="model_id" required="1" placeholder="报表取数的数据表(model)"/>
+              </group>
+              <group>
+                <field name="company_id" invisible="1"/>
+                <field name="template_id" attrs="{'required': [('use_client_templ','!=', True)]}" placeholder="选择使用的报表模板"/>
+                <field name="use_client_templ"/>
+                <field name="client_templ_name" attrs="{'invisible': [('use_client_templ','!=', True)], 'required': [('use_client_templ','=', True)]}"/>
+                <field name="open_print"/>
+                <field name="note"/>
+                <field name="state" invisible="1"/>
+              </group>
+            </group>
+            <notebook>
+              <page name="fields" string="字段">
+                <field name="field_ids" context="{ 'default_report_id': id, 'default_model_id': model_id}" />
+              </page>
+            </notebook>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record id="cf_report_define_field_list" model="ir.ui.view">
+      <field name="name">CF Report Define Field List</field>
+      <field name="model">cf.report.define.field</field>
+      <field name="comment">报表字段定义</field>
+      <field name="arch" type="xml">
+        <tree string="报表字段" decoration-danger="ttype=='one2many' or ttype=='many2many'">
+          <field name="report_id" invisible="1"/>
+          <field name="model_id"/>
+          <field name="field_id"/>
+          <field name="name"/>
+          <field name="field_description"/>
+          <field name="ttype"/>
+          <field name="sub_field_ids"/>
+          <button name="action_view_sub_fields" string="查看从表" type="object" class="oe_highlight" attrs="{'invisible':[('ttype','!=','one2many'),('ttype', '!=', 'many2many')]}"/>
+        </tree>
+      </field>
+    </record>
+
+    <record id="cf_report_define_field_form" model="ir.ui.view">
+      <field name="name">CF Report Define Field From</field>
+      <field name="model">cf.report.define.field</field>
+      <field name="comment">报表字段定义</field>
+      <field name="arch" type="xml">
+        <form string="报表字段定义">
+          <sheet>
+            <group>
+              <group>
+                <field name="id" invisible="1"/>
+                <field name="report_id" invisible="1"/>
+                <field name="model_id" readonly="1"/>
+                <field name="field_id" attrs="{'readonly':[('id','!=',False)]}"/>
+                <field name="name" attrs="{'readonly':[('id','!=',False)]}"/>
+              </group>
+              <group>
+                <field name="field_description" attrs="{'readonly':[('id','!=',False)]}"/>
+                <field name="ttype" attrs="{'readonly':[('id','!=',False)]}"/>
+                <field name="note"/>
+              </group>
+            </group>
+            <group attrs="{'invisible': [('ttype', '!=', 'one2many'),('ttype', '!=', 'many2many')]}">
+              <div style="width:100%; text-align:center;">
+                <button name="action_retrieve_fields" string="Retrieve Sub Fields" type="object" class="btn-primary"/>
+              </div>
+            </group>
+            <group string="从表字段" attrs="{'invisible': [('ttype', '!=', 'one2many'),('ttype', '!=', 'many2many')]}">
+              <field name="sub_field_ids" nolabel="1" context="{'default_parent_field_id':id, 'default_report_id': report_id}" />
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record id="cf_cfprint_license_form" model="ir.ui.view">
+      <field name="name">CFPrint License From</field>
+      <field name="model">cf.cfprint.license</field>
+      <field name="comment">许可证信息</field>
+      <field name="arch" type="xml">
+        <form string="许可证">
+          <sheet>
+            <group>
+                <field name="mcode" readonly="1"/>
+                <field name="license"/>
+                <field name="note"/>
+            </group>
+            <group>
+              <div style="width: 100%; padding: 2px 40px;">
+                <p>请把以上机器码请交给康虎软件工作室以获取授权许可证！</p>
+                <p>康虎软件工作室联系方式：</p>
+                <p>QQ：360026606</p>
+                <p>微信：360026606</p>
+                <p>QQ群：583804904</p>
+              </div>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <!-- actions opening views on models -->
+    <record id="act_cf_report_define_win" model="ir.actions.act_window">
+      <field name="name">CF Report Define Window</field>
+      <field name="res_model">cf.report.define</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="act_cf_cfprint_license_win" model="ir.actions.act_window">
+      <field name="name">CFPrint License Window</field>
+      <field name="res_model">cf.cfprint.license</field>
+      <field name="view_mode">form</field>
+    </record>
+
+    <menuitem id="menu_cf_report_define" name="Report Define" parent="cfprint.menu_cf_root" action="act_cf_report_define_win" sequence="5" groups="cfprint.cfprint_group_manager"/>
+    <menuitem id="menu_cf_cfprint_license" name="License" parent="cfprint.menu_cf_root" action="act_cf_cfprint_license_win" sequence="50" groups="cfprint.cfprint_group_manager"/>
+
+  </data>
+</odoo>

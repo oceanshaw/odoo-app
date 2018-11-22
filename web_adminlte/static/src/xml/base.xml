@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+    <t t-extend="SearchView.FilterMenu">
+        <t t-jquery="button.o_dropdown_toggler_btn" t-operation="replace">
+            <button class="o_dropdown_toggler_btn btn btn-sm dropdown-toggle" data-toggle="dropdown">
+                <span class="fa fa-filter"/> <span class="dropdown-text">Filters</span> <span class="caret"/>
+            </button>
+        </t>
+    </t>
+    <t t-extend="SearchView.GroupByMenu">
+        <t t-jquery="button.o_dropdown_toggler_btn" t-operation="replace">
+            <button class="o_dropdown_toggler_btn btn btn-sm dropdown-toggle" data-toggle="dropdown">
+                <span class="fa fa-bars"/> <span class="dropdown-text">Group By</span> <span class="caret"/>
+            </button>
+        </t>
+    </t>
+    <t t-extend="SearchView.FavoriteMenu">
+        <t t-jquery="button.o_dropdown_toggler_btn" t-operation="replace">
+            <button class="o_dropdown_toggler_btn btn btn-sm dropdown-toggle" data-toggle="dropdown">
+                <span class="fa fa-star"/> <span class="dropdown-text">Favorites</span> <span class="caret"/>
+            </button>
+        </t>
+    </t>
+
+</templates>

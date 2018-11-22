@@ -1,0 +1,43 @@
+.control-sidebar li {
+    float: left;
+    width: 33.33333%;
+    padding: 5px;
+}
+
+.control-sidebar li .full-opacity-hover {
+    display: block;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.4)
+}
+
+.control-sidebar li p {
+    font-size: 12px;
+}
+
+.control-sidebar li span {
+    display: block;
+    float: left;
+}
+
+.control-sidebar li .full-opacity-hover div:nth-child(1) span {
+    height: 7px;
+}
+
+.control-sidebar li .full-opacity-hover div:nth-child(1) span:nth-child(1) {
+    width: 20%;
+}
+
+.control-sidebar li .full-opacity-hover div:nth-child(1) span:nth-child(2) {
+    width: 80%;
+}
+
+.control-sidebar li .full-opacity-hover div:nth-child(2) span {
+    height: 20px;
+}
+
+.control-sidebar li .full-opacity-hover div:nth-child(2) span:nth-child(1) {
+    width: 20%;
+}
+
+.control-sidebar li .full-opacity-hover div:nth-child(2) span:nth-child(2) {
+    width: 80%;
+}

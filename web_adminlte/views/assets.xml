@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="assets_backend" name="Backend Theme" inherit_id="web.assets_backend">
+            <xpath expr=".">
+                <link rel="stylesheet" href="/web_adminlte/static/lib/css/AdminLTE.css"/>
+                <link rel="stylesheet" href="/web_adminlte/static/lib/css/skins/_all-skins.css"/>
+                <link rel="stylesheet" href="/web_adminlte/static/src/css/control-sidebar.css"/>
+                <link rel="stylesheet" href="/web_adminlte/static/src/css/backend.css"/>
+                <link rel="stylesheet" href="/web_adminlte/static/src/css/form_view.less"/>
+
+                <script type="text/javascript" src="/web_adminlte/static/lib/js/adminlte.js"/>
+                <script type="text/javascript" src="/web_adminlte/static/src/js/menu.js"/>
+                <script type="text/javascript" src="/web_adminlte/static/src/js/push_menu.js"/>
+            </xpath>
+        </template>
+    </data>
+</odoo>

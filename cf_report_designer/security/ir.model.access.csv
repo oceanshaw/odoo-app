@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_cf_report_define,cf_report_designer.cf_report_define,model_cf_report_define,,1,1,1,1
+access_cf_report_define_field,cf_report_designer.cf_report_define_field,model_cf_report_define_field,,1,1,1,1

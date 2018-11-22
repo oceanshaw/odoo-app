@@ -1,0 +1,5 @@
+<odoo>
+    <data>
+
+        <report file="cf_report_designer.rpt_sale_order" id="report_sale_order" model="sale.order" name="cf_report_designer.rpt_sale_order" report_type="qweb-html" string="销售订单测试[CFPrint]" /></data>
+</odoo>
