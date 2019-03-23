@@ -4,17 +4,17 @@
         <function name="install_lang" model="res.lang"/>
 
         <record id="base.main_partner" model="res.partner" context="{'default_is_company': True}">
-            <field name="name">广州尚鹏</field>
+            <field name="name">默认公司</field>
         </record>
 
         <!-- Basic Company  -->
         <record id="base.main_company" model="res.company">
-            <field name="name">广州尚鹏</field>
+            <field name="name">默认公司</field>
         </record>
 
         <record model="res.partner" id="base.partner_root">
-            <field name="name">超管</field>
-            <field name="email">oa@sunpop.cn</field>
+            <field name="name">管理员</field>
+            <field name="email">admin@erpit.cn</field>
         </record>
     </data>
 </odoo>
