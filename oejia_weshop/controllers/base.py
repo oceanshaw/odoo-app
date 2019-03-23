@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import json
+from datetime import date, datetime, time
 
 from odoo import http, exceptions
 from odoo.http import request
+from odoo.loglevels import ustr
 
 from .. import defs
 
@@ -35,21 +37,34 @@ error_code = {
 }
 
 
+def json_default(obj):
+    """
+    Properly serializes date and datetime objects.
+    """
+    from odoo import fields
+    if isinstance(obj, date):
+        if isinstance(obj, datetime):
+            return fields.Datetime.to_string(obj)
+        return fields.Date.to_string(obj)
+    return ustr(obj)
+
+
 class BaseController(object):
 
     def _check_domain(self, sub_domain):
         wxapp_entry = request.env['wxapp.config'].sudo().search([('sub_domain', '=', sub_domain)])
         if not wxapp_entry:
             return self.res_err(404), None
-        return None, wxapp_entry
+        return None, wxapp_entry[0]
 
     def _check_user(self, sub_domain, token):
-        user = request.env['wxapp.config'].sudo().search([('sub_domain', '=', sub_domain)])
-        if not user:
-            return self.res_err(404), None, user
+        wxapp_entry = request.env['wxapp.config'].sudo().search([('sub_domain', '=', sub_domain)])
+        if not wxapp_entry:
+            return self.res_err(404), None, wxapp_entry
 
+        wxapp_entry =wxapp_entry[0]
         if not token:
-            return self.res_err(300), None, user
+            return self.res_err(300), None, wxapp_entry
 
         access_token = request.env(user=1)['wxapp.access_token'].search([
             ('token', '=', token),
@@ -57,7 +72,7 @@ class BaseController(object):
         ])
 
         if not access_token:
-            return self.res_err(901), None, user
+            return self.res_err(901), None, wxapp_entry
 
         wechat_user = request.env(user=1)['wxapp.user'].search([
             ('open_id', '=', access_token.open_id),
@@ -65,9 +80,9 @@ class BaseController(object):
         ])
 
         if not wechat_user:
-            return self.res_err(10000), None, user
+            return self.res_err(10000), None, wxapp_entry
 
-        return None, wechat_user, user
+        return None, wechat_user, wxapp_entry
 
 
     def res_ok(self, data=None):
@@ -76,7 +91,7 @@ class BaseController(object):
             ret['data'] = data
         return request.make_response(
             headers={'Content-Type': 'json'},
-            data=json.dumps(ret)
+            data=json.dumps(ret, default=json_default)
         )
 
     def res_err(self, code, data=None):
@@ -88,4 +103,5 @@ class BaseController(object):
 
 def convert_static_link(request, html):
     base_url = request.env['ir.config_parameter'].sudo().get_param('web.base.url')
+    html = html.replace('<p>', '').replace('</p>', '')
     return html.replace('src="', 'src="{base_url}'.format(base_url=base_url))

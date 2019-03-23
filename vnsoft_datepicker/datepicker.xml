@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<odoo>
-    <template id="assets_backend" name="vnsoft_datepicker assets" inherit_id="web.assets_backend">
-        <xpath expr="." position="inside">
-            <script type="text/javascript" src="/vnsoft_datepicker/static/src/js/vnsoft_datepicker.js"></script>
-        </xpath>
-    </template>
-</odoo>

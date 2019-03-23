@@ -38,7 +38,7 @@ class WxappUser(http.Controller, BaseController):
 
         except Exception as e:
             _logger.exception(e)
-            return self.res_err(-1, e.message)
+            return self.res_err(-1, e.name)
 
     @http.route('/<string:sub_domain>/user/wxapp/login', auth='public', methods=['GET'])
     def login(self, sub_domain, code=None, **kwargs):
@@ -80,6 +80,7 @@ class WxappUser(http.Controller, BaseController):
                 access_token = request.env(user=1)['wxapp.access_token'].create({
                     'open_id': open_id,
                     'session_key': session_key,
+                    'sub_domain': sub_domain,
                 })
 
             data = {
@@ -93,7 +94,7 @@ class WxappUser(http.Controller, BaseController):
 
         except Exception as e:
             _logger.exception(e)
-            return self.res_err(-1, e.message)
+            return self.res_err(-1, e.name)
 
 
     @http.route('/<string:sub_domain>/user/wxapp/register/complex', auth='public', methods=['GET'])
@@ -136,4 +137,4 @@ class WxappUser(http.Controller, BaseController):
 
         except Exception as e:
             _logger.exception(e)
-            return self.res_err(-1, e.message)
+            return self.res_err(-1, e.name)

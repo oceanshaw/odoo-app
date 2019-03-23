@@ -1,9 +1,0 @@
-<odoo>
-    <data>
-
-        <record id="license_0" model="cf.cfprint.license">
-            <field name="mcode">00000000-0000-0000-0000-000000000000</field>
-        </record>
-
-    </data>
-</odoo>

@@ -25,13 +25,16 @@ class WxappConfig(models.Model):
     team_id = fields.Many2one('crm.team', string='所属销售渠道', required=True)
 
     @api.model
-    def get_config(self, key, sub_domain=False, obj=False):
+    def get_config(self, key, sub_domain, obj=False):
         config = self.search([('sub_domain', '=', sub_domain)])
-        if obj:
-            return config
-
         if config:
+            config = config[0]
             config.ensure_one()
+            if obj:
+                return config
+
+            if key=='mallName':
+                key = 'mall_name'
             return config.__getattribute__(key)
         else:
             return False

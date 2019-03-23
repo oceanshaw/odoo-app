@@ -29,7 +29,9 @@ class WxappOrder(http.Controller, BaseController):
             city_id = int(kwargs.pop('cityId'))
             district_id = int(kwargs.pop('districtId')) if 'districtId' in kwargs.keys() else False
             zipcode = kwargs.pop('code')
+            link_man = kwargs.pop('linkMan')
             calculate = kwargs.pop('calculate', False)
+            remark = kwargs.pop('remark', '')
 
             goods_price, logistics_price, total, goods_list = self.parse_goods_json(
                 goods_json, province_id, city_id, district_id, calculate
@@ -39,13 +41,13 @@ class WxappOrder(http.Controller, BaseController):
                 'zipcode': zipcode,
                 'partner_id': wechat_user.partner_id.id,
                 'number_goods': sum(map(lambda r: r['product_uom_qty'], goods_list)),
-                'goods_price': goods_price,
                 'logistics_price': logistics_price,
-                'total': total,
                 'province_id': province_id,
                 'city_id': city_id,
                 'district_id': district_id,
-                'team_id': entry.team_id.id
+                'team_id': entry.team_id.id,
+                'note': remark,
+                'linkman': link_man,
             }
             order_dict.update(kwargs)
 
@@ -61,11 +63,18 @@ class WxappOrder(http.Controller, BaseController):
                 for each_goods in goods_list:
                     each_goods['order_id'] = order.id
                     request.env(user=1)['sale.order.line'].create(each_goods)
+                if logistics_price>0:
+                    request.env(user=1)['sale.order.line'].create({
+                        'order_id': order.id,
+                        'product_id': request.env.ref('oejia_weshop.product_product_delivery_weshop').id,
+                        'price_unit': logistics_price,
+                        'product_uom_qty': 1,
+                    })
 
-                #mail_template = request.env.ref('wechat_mall.wechat_mall_order_create')
+                #mail_template = request.env.ref('wechat_mall_order_create')
                 #mail_template.sudo().send_mail(order.id, force_send=True, raise_exception=False)
                 _data = {
-                    "amountReal": order.total,
+                    "amountReal": order.amount_total,
                     "dateAdd": order.create_date,
                     "id": order.id,
                     "orderNumber": order.name,
@@ -77,7 +86,7 @@ class WxappOrder(http.Controller, BaseController):
 
         except Exception as e:
             _logger.exception(e)
-            return self.res_err(-1, e.message)
+            return self.res_err(-1, e.name)
 
     def parse_goods_json(self, goods_json, province_id, city_id, district_id, calculate):
         """
@@ -139,13 +148,13 @@ class WxappOrder(http.Controller, BaseController):
             if not product:
                 raise exceptions.ValidationError('商品不存在！')
 
-            price = product.present_price or goods.list_price
+            price = product.get_present_price()
             total = price * amount
             property_str = product.name
 
-            stores = product.qty_public - amount
+            stores = product.get_present_qty() - amount
             if not property_child_ids:
-                stores = goods.qty_public_tpl - amount
+                stores = goods.get_present_qty() - amount
 
             if stores < 0:
                 raise exceptions.ValidationError('库存不足！')
@@ -153,9 +162,9 @@ class WxappOrder(http.Controller, BaseController):
                 # todo 发送库存空预警
                 pass
             if not calculate:
-                product.sudo().write({'qty_public': stores})
+                product.sudo().change_qty(-amount)
                 if not property_child_ids:
-                    goods.sudo().write({'qty_public_tpl': stores})
+                    goods.sudo().change_qty(-amount)
 
         return price, total, property_str, product
 
@@ -194,7 +203,7 @@ class WxappOrder(http.Controller, BaseController):
 
         except Exception as e:
             _logger.exception(e)
-            return self.res_err(-1, e.message)
+            return self.res_err(-1, e.name)
 
 
     @http.route('/<string:sub_domain>/order/list', auth='public', method=['GET'])
@@ -212,10 +221,10 @@ class WxappOrder(http.Controller, BaseController):
                 orders = request.env['sale.order'].search([
                     ('partner_id', '=', wechat_user.partner_id)
                 ])
-
+            delivery_product_id = request.env.ref('oejia_weshop.product_product_delivery_weshop').id
             data = {
                 "orderList": [{
-                    "amountReal": each_order.total,
+                    "amountReal": each_order.amount_total,
                     "dateAdd": each_order.create_date,
                     "id": each_order.id,
                     "orderNumber": each_order.name,
@@ -226,14 +235,14 @@ class WxappOrder(http.Controller, BaseController):
                     each_order.id: [
                         {
                             "pic": each_goods.product_id.product_tmpl_id.get_main_image(),
-                        } for each_goods in each_order.order_line]
+                        } for each_goods in each_order.order_line if each_goods.product_id.id!=delivery_product_id]
                     for each_order in orders}
             }
             return self.res_ok(data)
 
         except Exception as e:
             _logger.exception(e)
-            return self.res_err(-1, e.message)
+            return self.res_err(-1, e.name)
 
 
     @http.route('/<string:sub_domain>/order/detail', auth='public', method=['GET'])
@@ -254,18 +263,14 @@ class WxappOrder(http.Controller, BaseController):
             if not order:
                 return self.res_err(404)
 
-            if order.shipper_traces:
-                traces = json.loads(order.shipper_traces).get('data', {})
-            else:
-                traces = {}
-
+            delivery_product_id = request.env.ref('oejia_weshop.product_product_delivery_weshop').id
             data = {
                 "code": 0,
                 "data": {
                     "orderInfo": {
                         "amount": order.goods_price,
                         "amountLogistics": order.logistics_price,
-                        "amountReal": order.total,
+                        "amountReal": order.amount_total,
                         "dateAdd": order.create_date,
                         "dateUpdate": order.write_date,
                         "goodsNumber": order.number_goods,
@@ -280,15 +285,15 @@ class WxappOrder(http.Controller, BaseController):
                     },
                     "goods": [
                         {
-                            "amount": each_goods.product_id.price,
+                            "amount": each_goods.price_unit,
                             "goodsId": each_goods.product_id.product_tmpl_id.id,
-                            "goodsName": each_goods.product_id.name,
+                            "goodsName": each_goods.name,
                             "id": each_goods.id,
                             "number": each_goods.product_uom_qty,
                             "orderId": order.id,
                             "pic": each_goods.product_id.product_tmpl_id.get_main_image(),
                             "property": each_goods.product_id.get_property_str(),
-                        } for each_goods in order.order_line
+                        } for each_goods in order.order_line if each_goods.product_id.id!=delivery_product_id
                     ],
                     "logistics": {
                         "address": order.address,
@@ -301,25 +306,27 @@ class WxappOrder(http.Controller, BaseController):
                         "provinceId": order.province_id.id,
                         "shipperCode": order.shipper_id.code if order.shipper_id else '',
                         "shipperName": order.shipper_id.name if order.shipper_id else '',
-                        "status": int(traces.get('State', 0)) if order.shipper_id else '',
+                        "status": 0 if order.shipper_id else '',
                         "trackingNumber": order.shipper_no if order.shipper_no else ''
                     },
                 },
                 "msg": "success"
             }
-            traces_list = traces.get('Traces')
-            if traces_list:
-                data["data"]["logisticsTraces"] = traces_list
+            if order.shipper_no:
+                self.build_traces(order, data)
 
             return self.res_ok(data["data"])
 
         except Exception as e:
             _logger.exception(e)
-            return self.res_err(-1, e.message)
+            return self.res_err(-1, e.name)
 
+    def build_traces(self, order, data):
+        pass
 
     @http.route('/<string:sub_domain>/order/close', auth='public', method=['GET'])
-    def close(self, sub_domain, token=None, order_id=None, **kwargs):
+    def close(self, sub_domain, token=None, orderId=None, **kwargs):
+        order_id = orderId
         try:
             res, wechat_user, entry = self._check_user(sub_domain, token)
             if res:return res
@@ -335,20 +342,24 @@ class WxappOrder(http.Controller, BaseController):
             if not order:
                 return self.res_err(404)
 
-            order.write({'customer_status': 'closed', 'state': 'cancel'})
+            order.write({'customer_status': 'closed'})
+            order.action_cancel()
 
-            #mail_template = request.env.ref('wechat_mall.wechat_mall_order_closed')
+            #mail_template = request.env.ref('wechat_mall_order_closed')
             #mail_template.sudo().send_mail(order.id, force_send=True, raise_exception=False)
 
             return self.res_ok()
 
         except Exception as e:
             _logger.exception(e)
-            return self.res_err(-1, e.message)
+            return self.res_err(-1, e.name)
 
 
     @http.route('/<string:sub_domain>/order/delivery', auth='public', method=['GET'])
     def delivery(self, sub_domain, token=None, orderId=None, **kwargs):
+        '''
+        确认收货接口
+        '''
         order_id = orderId
         try:
             res, wechat_user, entry = self._check_user(sub_domain, token)
@@ -367,19 +378,20 @@ class WxappOrder(http.Controller, BaseController):
 
             order.write({'customer_status': 'unevaluated'})
 
-            #mail_template = request.env.ref('wechat_mall.wechat_mall_order_confirmed')
+            #mail_template = request.env.ref('wechat_mall_order_confirmed')
             #mail_template.sudo().send_mail(order.id, force_send=True, raise_exception=False)
 
             return self.res_ok()
 
         except Exception as e:
             _logger.exception(e)
-            return self.res_err(-1, e.message)
+            return self.res_err(-1, e.name)
 
 
     @http.route('/<string:sub_domain>/order/reputation', auth='public', method=['GET'])
     def reputation(self, sub_domain, token=None, order_id=None, reputation=2, **kwargs):
         '''
+        评论接口
         {
             "token": "xxx",
             "orderId": "4",
@@ -394,6 +406,7 @@ class WxappOrder(http.Controller, BaseController):
             post_json = json.loads(kwargs.pop('postJsonString'))
             token = post_json.get('token',None)
             order_id = post_json.get('orderId',None)
+            reputations = post_json.get('reputations',[])
 
             res, wechat_user, entry = self._check_user(sub_domain, token)
             if res:return res
@@ -411,11 +424,15 @@ class WxappOrder(http.Controller, BaseController):
 
             order.write({'customer_status': 'completed'})
 
+            for reputation in reputations:
+                # 保存评论
+                pass
+
             return request.make_response(json.dumps({'code': 0, 'msg': 'success'}))
 
         except Exception as e:
             _logger.exception(e)
-            return self.res_err(-1, e.message)
+            return self.res_err(-1, e.name)
 
 
     @http.route('/<string:sub_domain>/order/pay', auth='public', method=['POST'], csrf=False)
@@ -436,10 +453,11 @@ class WxappOrder(http.Controller, BaseController):
             if not order:
                 return self.res_err(404)
 
-            order.write({'customer_status': 'pending', 'state': 'sale'})
+            order.write({'customer_status': 'pending'})
+            order.action_confirm()
             return request.make_response(json.dumps({'code': 0, 'msg': 'success'}))
 
         except Exception as e:
             _logger.exception(e)
-            return self.res_err(-1, e.message)
+            return self.res_err(-1, e.name)
 

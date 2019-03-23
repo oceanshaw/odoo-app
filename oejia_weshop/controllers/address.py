@@ -21,14 +21,14 @@ class WxappAddress(http.Controller, BaseController):
             res, wechat_user, entry = self._check_user(sub_domain, token)
             if res:return res
             _data = {
-                'balance': 10,
-                'score': 10,
+                'balance': 0,
+                'score': 0,
             }
             return self.res_ok(_data)
 
         except Exception as e:
             _logger.exception(e)
-            return self.res_err(-1, e.message)
+            return self.res_err(-1, e.name)
 
     def _get_address_dict(self, each_address, wxapp_user_id):
         _dict = {
@@ -67,7 +67,7 @@ class WxappAddress(http.Controller, BaseController):
 
         except Exception as e:
             _logger.exception(e)
-            return self.res_err(-1, e.message)
+            return self.res_err(-1, e.name)
 
 
     @http.route('/<string:sub_domain>/user/shipping-address/add', auth='public', methods=['GET','POST'], csrf=False, type='http')
@@ -99,7 +99,7 @@ class WxappAddress(http.Controller, BaseController):
 
         except Exception as e:
             _logger.exception(e)
-            return self.res_err(-1, e.message)
+            return self.res_err(-1, e.name)
 
 
     @http.route('/<string:sub_domain>/user/shipping-address/update', auth='public', methods=['GET','POST'], csrf=False, type='http')
@@ -134,7 +134,7 @@ class WxappAddress(http.Controller, BaseController):
 
         except Exception as e:
             _logger.exception(e)
-            return self.res_err(-1, e.message)
+            return self.res_err(-1, e.name)
 
 
     @http.route('/<string:sub_domain>/user/shipping-address/delete', auth='public', methods=['GET'])
@@ -161,7 +161,7 @@ class WxappAddress(http.Controller, BaseController):
 
         except Exception as e:
             _logger.exception(e)
-            return self.res_err(-1, e.message)
+            return self.res_err(-1, e.name)
 
 
     @http.route('/<string:sub_domain>/user/shipping-address/default', auth='public', methods=['GET'])
@@ -183,7 +183,7 @@ class WxappAddress(http.Controller, BaseController):
 
         except Exception as e:
             _logger.exception(e)
-            return self.res_err(-1, e.message)
+            return self.res_err(-1, e.name)
 
 
     @http.route('/<string:sub_domain>/user/shipping-address/detail', auth='public', methods=['GET'])
@@ -205,4 +205,4 @@ class WxappAddress(http.Controller, BaseController):
 
         except Exception as e:
             _logger.exception(e)
-            return self.res_err(-1, e.message)
+            return self.res_err(-1, e.name)

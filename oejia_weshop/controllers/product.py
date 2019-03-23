@@ -24,11 +24,12 @@ class WxappProduct(http.Controller, BaseController):
             "dateAdd": each_goods.create_date,
             "dateUpdate": each_goods.write_date,
             "id": each_goods.id,
-            "logisticsId": 0,
+            "logisticsId": 1,
             "minPrice": each_goods.list_price,
+            "minScore": 0,
             "name": each_goods.name,
             "numberFav": each_goods.number_fav,
-            "numberGoodReputation": each_goods.number_good_reputation,
+            "numberGoodReputation": 0,
             "numberOrders": each_goods.sales_count,
             "originalPrice": each_goods.original_price,
             "paixu": each_goods.sequence or 0,
@@ -38,7 +39,7 @@ class WxappProduct(http.Controller, BaseController):
             "shopId": 0,
             "status": 0 if each_goods.wxapp_published else 1,
             "statusStr": '上架' if each_goods.wxapp_published else '下架',
-            "stores": each_goods.qty_public_tpl,
+            "stores": each_goods.get_present_qty(),
             "userId": each_goods.create_uid.id,
             "views": each_goods.views,
             "weight": each_goods.weight
@@ -62,20 +63,22 @@ class WxappProduct(http.Controller, BaseController):
         return _dict
 
     @http.route('/<string:sub_domain>/shop/goods/list', auth='public', methods=['GET'])
-    def list(self, sub_domain, categoryId=False, nameLike=False, **kwargs):
+    def list(self, sub_domain, categoryId=False, nameLike=False, page=1, pageSize=20, **kwargs):
+        page = int(page)
+        pageSize = int(pageSize)
         category_id = categoryId
         try:
             ret, entry = self._check_domain(sub_domain)
             if ret:return ret
 
-            domain = [('wxapp_published', '=', True)]
+            domain = [('sale_ok', '=', True), ('wxapp_published', '=', True)]
             if category_id:
                 cate_ids = [int(category_id)] + request.env['wxapp.product.category'].sudo().browse(int(category_id)).child_ids.ids
                 domain.append(('wxpp_category_id', 'in', cate_ids))
             if nameLike:
                 domain.append(('name', 'ilike', nameLike))
 
-            goods_list = request.env['product.template'].sudo().search(domain)
+            goods_list = request.env['product.template'].sudo().search(domain, offset=(page-1)*pageSize, limit=pageSize)
 
             if not goods_list:
                 return self.res_err(404)
@@ -84,20 +87,25 @@ class WxappProduct(http.Controller, BaseController):
 
         except Exception as e:
             _logger.exception(e)
-            return self.res_err(-1, e.message)
+            return self.res_err(-1, e.name)
 
 
     @http.route('/<string:sub_domain>/shop/goods/detail', auth='public', methods=['GET'])
-    def detail(self, sub_domain, id=False, **kwargs):
+    def detail(self, sub_domain, id=False, code=False, **kwargs):
         goods_id = id
         try:
             ret, entry = self._check_domain(sub_domain)
             if ret:return ret
 
-            if not goods_id:
+            if not goods_id and not code:
                 return self.res_err(300)
 
-            goods = request.env['product.template'].sudo().browse(int(goods_id))
+            if goods_id:
+                product = None
+                goods = request.env['product.template'].sudo().browse(int(goods_id))
+            else:
+                product = request.env['product.product'].sudo().search([('barcode', '=', code)])
+                goods = product.product_tmpl_id
 
             if not goods:
                 return self.res_err(404)
@@ -115,16 +123,22 @@ class WxappProduct(http.Controller, BaseController):
                 },
                 "msg": "success"
             }
-            self.product_info_ext(data, goods)
+            self.product_info_ext(data, goods, product)
 
-            _logger.info(str(data))
             goods.sudo().write({'views': goods.views + 1})
             return self.res_ok(data['data'])
 
         except Exception as e:
             _logger.exception(e)
-            return self.res_err(-1, e.message)
+            return self.res_err(-1, e.name)
 
-    def product_info_ext(self, data, goods):
-        pass
+    def product_info_ext(self, data, goods, product):
+        data["data"]["logistics"] = {
+                "logisticsBySelf": False,
+                "isFree": False,
+                "by_self": False,
+                "feeType": 0,
+                "feeTypeStr": '按件',
+                "details": []
+            }
 

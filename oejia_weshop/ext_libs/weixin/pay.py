@@ -13,7 +13,7 @@ import socket
 import requests
 import xmltodict
 
-from helper import smart_str, smart_unicode, md5_constructor as md5
+from .helper import smart_str, smart_text, md5_constructor as md5
 
 TIMEOUT = 5
 
@@ -31,14 +31,14 @@ def generate_nonce_str(length=32):
 def params_encoding(params, charset='utf-8'):
     newparams = {}
     for k, v in params.items():
-        newparams[k] = smart_unicode(v)
+        newparams[k] = smart_text(v)
     return newparams
 
 
 def params_filter(params, delimiter='&', charset='utf-8',
                   excludes=['sign', 'sign_type']):
     ks = params.keys()
-    ks.sort()
+    ks = sorted(ks)
     newparams = {}
     prestr = ''
     if params.get('input_charset', None):
@@ -57,7 +57,7 @@ def params_filter(params, delimiter='&', charset='utf-8',
 def build_mysign(prestr, key=None, sign_type='MD5'):
     if sign_type == 'MD5':
         prestr += '&key=%s' % str(key)
-        return md5(prestr).hexdigest().upper()
+        return md5(prestr.encode('utf-8')).hexdigest().upper()
     return ''
 
 
